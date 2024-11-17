@@ -22,13 +22,11 @@
             <input id="upload_icon" type="file">
         </label>
     </div>
-
+    <span>🌾画像を動かす時下向きから始めるとリロードされちゃうので横向きに動かし始めるといいよ</span>
     <canvas class="canvas" id="myCanvas" width="400px" height="400px" style="background-color: #e4e4e4;"></canvas>
     <input type="range" id="zoom-slider" style="width: 400px;" min="50" max="200" value="100">
 
     <button id="download" type="button">ダウンロード</button>
-
-    <span id="debug"></span>
   </body>
   <script>
     const canvas = document.getElementById('myCanvas');
@@ -72,7 +70,6 @@ canvas.addEventListener('mousemove', (event) => {
   if (isDragging) {
     offsetX = event.offsetX - startX;
     offsetY = event.offsetY - startY;
-    // $('#debug').text(`${offsetX} / ${offsetY}`);
     drawImage();
   }
 });
@@ -81,8 +78,6 @@ canvas.addEventListener('touchmove', (e) => {
     const touch = e.touches[0];
     offsetX = touch.clientX - startX;
     offsetY = touch.clientY - startY;
-
-    // $('#debug').text(`${offsetX} / ${offsetY}`);
     drawImage();
   }
 })
