@@ -57,12 +57,10 @@ canvas.addEventListener('mousedown', (event) => {
 document.addEventListener("touchstart", function(e) {
     //スクロール無効化                                      
     e.preventDefault();
-    // 指1本のときは触れているＸＹ座標を記録
-    if (e.touches.length <= 1) {
-        startX = e.touches[0].pageX - offsetX;
-        startY = e.touches[0].pageY - offsetY;
-    // 指2本の2本の指のＸ座標の差とＹ座標の差を加えた値を記録
-    }
+    isDragging = true;
+    const touch = e.touches[0];
+    startX = touch.clientX - offsetX;
+    startY = touch.clientY - offsetY;
 });
 
 canvas.addEventListener('mousemove', (event) => {
@@ -72,6 +70,13 @@ canvas.addEventListener('mousemove', (event) => {
     drawImage();
   }
 });
+canvas.addEventListener('touchmove', (e) => {
+  if (isDragging) {
+    offsetX = touch.clientX - startX;
+    offsetY = touch.clientY - startY;
+    drawImage();
+  }
+})
 
 let elements = document.getElementById('zoom-slider');
 elements.addEventListener('mousemove', (event) => {
