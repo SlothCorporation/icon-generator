@@ -54,20 +54,18 @@ canvas.addEventListener('mousedown', (event) => {
   startX = event.offsetX - offsetX;
   startY = event.offsetY - offsetY;
 });
-canvas.addEventListener('touchstart', (event) => {
-  isDragging = true;
-  startX = event.offsetX - offsetX;
-  startY = event.offsetY - offsetY;
+document.addEventListener("touchstart", function(e) {
+    //スクロール無効化                                      
+    e.preventDefault();
+    // 指1本のときは触れているＸＹ座標を記録
+    if (e.touches.length <= 1) {
+        startX = e.touches[0].pageX - offsetX;
+        startY = e.touches[0].pageY - offsetY;
+    // 指2本の2本の指のＸ座標の差とＹ座標の差を加えた値を記録
+    }
 });
 
 canvas.addEventListener('mousemove', (event) => {
-  if (isDragging) {
-    offsetX = event.offsetX - startX;
-    offsetY = event.offsetY - startY;
-    drawImage();
-  }
-});
-canvas.addEventListener('touchmove', (event) => {
   if (isDragging) {
     offsetX = event.offsetX - startX;
     offsetY = event.offsetY - startY;
