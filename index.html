@@ -24,6 +24,8 @@
     <input type="range" id="zoom-slider" style="width: 400px;" min="50" max="200" value="100">
 
     <button id="download" type="button">ダウンロード</button>
+
+    <span id="debug"></span>
   </body>
   <script>
     const canvas = document.getElementById('myCanvas');
@@ -67,6 +69,7 @@ canvas.addEventListener('mousemove', (event) => {
   if (isDragging) {
     offsetX = event.offsetX - startX;
     offsetY = event.offsetY - startY;
+    $('#debug').text(`${offsetX} / ${offsetY}`);
     drawImage();
   }
 });
@@ -75,6 +78,8 @@ canvas.addEventListener('touchmove', (e) => {
     const touch = e.touches[0];
     offsetX = touch.clientX - startX;
     offsetY = touch.clientY - startY;
+
+    $('#debug').text(`${offsetX} / ${offsetY}`);
     drawImage();
   }
 })
