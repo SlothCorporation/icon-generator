@@ -1,0 +1,131 @@
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <script src="https://code.jquery.com/jquery-latest.min.js" type="text/javascript"></script>
+    <style>
+        canvas {
+            border: solid 1px #000;
+        }
+    </style>    
+</head>
+  <body>
+    <div style="display: flex; flex-direction: column; margin-bottom: 5px;">
+        <label style="margin-bottom: 5px;">
+            <span>フレーム</span>
+            <input id="upload_frame" type="file">
+        </label>
+        <label>
+            <span>アイコン</span>
+            <input id="upload_icon" type="file">
+        </label>
+    </div>
+
+    <canvas class="canvas" id="myCanvas" width="400px" height="400px" style="background-color: #e4e4e4;"></canvas>
+    <input type="range" id="zoom-slider" style="width: 400px;" min="50" max="200" value="100">
+
+    <button id="download" type="button">ダウンロード</button>
+  </body>
+  <script>
+    const canvas = document.getElementById('myCanvas');
+    const ctx = canvas.getContext('2d');
+
+    let offsetX = 0;
+    let offsetY = 0;
+    let offsetSize = 100;
+    let isDragging = false;
+    let startX, startY;
+
+    const drawImage = () => {
+        ctx.clearRect(0,0, canvas.width, canvas.height);
+
+        // アイコンの画像
+        const drawWidth = (offsetSize / 100) * image1.width;
+        const drawHeight = (offsetSize / 100) * image1.height;
+        const x = (canvas.width - drawWidth) / 2 + offsetX;
+        const y = (canvas.height - drawHeight) / 2 + offsetY;
+        ctx.drawImage(image1, x, y, drawWidth, drawHeight);
+
+        // フレームの画像
+        ctx.drawImage(image2, 0, 0, 400, 400);
+    }
+
+    canvas.addEventListener('mousedown', (event) => {
+  isDragging = true;
+  startX = event.offsetX - offsetX;
+  startY = event.offsetY - offsetY;
+});
+
+canvas.addEventListener('mousemove', (event) => {
+  if (isDragging) {
+    offsetX = event.offsetX - startX;
+    offsetY = event.offsetY - startY;
+    drawImage();
+  }
+});
+
+let elements = document.getElementById('zoom-slider');
+elements.addEventListener('mousemove', (event) => {
+    offsetSize = event.target.value
+    drawImage();
+})
+
+canvas.addEventListener('mouseup', () => {
+  isDragging = false;
+});
+
+canvas.addEventListener('mouseleave', () => {
+  isDragging = false;
+});
+
+const image1 = new Image();
+$('#upload_icon').on('change', function() {
+    let iconFile = $(this)[0].files[0];
+    if (!iconFile.type.match('image.*')) {
+        alert('画像を選択してください');
+        return;
+    }
+
+    let reader = new FileReader();
+    reader.onload = function() {
+        image1.src = reader.result; 
+    }
+    reader.readAsDataURL(iconFile);
+})
+
+const image2 = new Image();
+$('#upload_frame').on('change', function() {
+    let frameFile = $(this)[0].files[0];
+    if (!frameFile.type.match('image.*')) {
+        alert('画像を選択してください');
+        return;
+    }
+
+    let reader = new FileReader();
+    reader.onload = function() {
+        image2.src = reader.result; 
+    }
+    reader.readAsDataURL(frameFile);
+})
+
+image1.onload = () => {
+  if (image2.complete) {
+    drawImage();
+  }
+};
+
+image2.onload = () => {
+  if (image1.complete) {
+    drawImage();
+  }
+};
+
+$('#download').on('click', function() {
+    const link = document.createElement('a');
+    link.download = 'x_icon.png';
+    link.href = canvas.toDataURL();
+    link.click();
+})
+
+
+  </script>
+</html>
