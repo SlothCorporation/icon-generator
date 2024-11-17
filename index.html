@@ -12,7 +12,8 @@
     </style>    
 </head>
   <body>
-    <div style="display: flex; flex-direction: column; margin-bottom: 5px;">
+    <div style="display: flex; flex-direction: column;">
+      <div style="display: flex; flex-direction: column; margin-bottom: 5px;">
         <label style="margin-bottom: 5px;">
             <span>フレーム</span>
             <input id="upload_frame" type="file">
@@ -21,12 +22,24 @@
             <span>アイコン</span>
             <input id="upload_icon" type="file">
         </label>
+        <!-- <img id="maskImage" src="https://via.placeholder.com/400/0000FF/FFFFFF" alt="サンプル画像" style="display: none;"> -->
+      </div>
+      <div style="margin-bottom: 10px;">
+        <span>🌾画像を動かす時下向きから始めるとリロードされちゃうので横向きに動かし始めるといいよ</span>
+        <canvas class="canvas" id="myCanvas" width="400px" height="400px" style="background-color: #e4e4e4;"></canvas>
+      </div>
+      <input type="range" id="zoom-slider" style="width: 400px;" min="50" max="200" value="100">
+      <div style="margin-bottom: 10px;">
+        <button id="download" type="button">ダウンロード</button>
+      </div>
     </div>
-    <span>🌾画像を動かす時下向きから始めるとリロードされちゃうので横向きに動かし始めるといいよ</span>
-    <canvas class="canvas" id="myCanvas" width="400px" height="400px" style="background-color: #e4e4e4;"></canvas>
-    <input type="range" id="zoom-slider" style="width: 400px;" min="50" max="200" value="100">
 
-    <button id="download" type="button">ダウンロード</button>
+    <div style="border: solid 1px #000; font-size: 12px">
+      <span style="padding: 10px">更新情報</span>
+      <ul>
+        <li>アイコンフレームの外側を白く塗りつぶすように修正しました。</li>
+      </ul>
+    </div>
   </body>
   <script>
     const canvas = document.getElementById('myCanvas');
@@ -40,6 +53,15 @@
 
     const drawImage = () => {
         ctx.clearRect(0,0, canvas.width, canvas.height);
+
+        ctx.save(); // 現在の状態を保存
+        // 外側を透明にするマスクを設定
+        ctx.fillStyle = '#fff';
+        ctx.fillRect(0,0,400,400)
+
+        ctx.beginPath();
+        ctx.arc(200, 200, 199, 0, Math.PI * 2); // 中央部分の円を定義
+        ctx.clip(); // この円内だけが描画可能
 
         // アイコンの画像
         const drawWidth = (offsetSize / 100) * image1.width;
@@ -134,13 +156,13 @@ $('#upload_frame').on('change', function() {
 })
 
 image1.onload = () => {
-  if (image2.complete) {
+  if (image1.complete) {
     drawImage();
   }
 };
 
 image2.onload = () => {
-  if (image1.complete) {
+  if (image2.complete) {
     drawImage();
   }
 };
