@@ -49,7 +49,12 @@
         ctx.drawImage(image2, 0, 0, 400, 400);
     }
 
-    canvas.addEventListener('mousedown', (event) => {
+canvas.addEventListener('mousedown', (event) => {
+  isDragging = true;
+  startX = event.offsetX - offsetX;
+  startY = event.offsetY - offsetY;
+});
+canvas.addEventListener('touchstart', (event) => {
   isDragging = true;
   startX = event.offsetX - offsetX;
   startY = event.offsetY - offsetY;
@@ -62,14 +67,28 @@ canvas.addEventListener('mousemove', (event) => {
     drawImage();
   }
 });
+canvas.addEventListener('touchmove', (event) => {
+  if (isDragging) {
+    offsetX = event.offsetX - startX;
+    offsetY = event.offsetY - startY;
+    drawImage();
+  }
+});
 
 let elements = document.getElementById('zoom-slider');
 elements.addEventListener('mousemove', (event) => {
     offsetSize = event.target.value
     drawImage();
 })
+elements.addEventListener('touchmove', (event) => {
+    offsetSize = event.target.value
+    drawImage();
+})
 
 canvas.addEventListener('mouseup', () => {
+  isDragging = false;
+});
+canvas.addEventListener('touchend', () => {
   isDragging = false;
 });
 
